@@ -6,5 +6,8 @@ use Illuminate\Http\Request;
 
 class ReplyController extends Controller
 {
-    //
+    public function show($id)
+    {
+
+    }
 }
