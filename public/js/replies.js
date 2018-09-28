@@ -110,15 +110,15 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
-/***/ 46:
+/***/ 48:
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(47);
+module.exports = __webpack_require__(49);
 
 
 /***/ }),
 
-/***/ 47:
+/***/ 49:
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -136,7 +136,7 @@ window.Vue = __webpack_require__(3);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('replies', __webpack_require__(48));
+Vue.component('replies', __webpack_require__(50));
 
 var app = new Vue({
   el: '#app'
@@ -144,15 +144,15 @@ var app = new Vue({
 
 /***/ }),
 
-/***/ 48:
+/***/ 50:
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(4)
 /* script */
-var __vue_script__ = __webpack_require__(49)
+var __vue_script__ = __webpack_require__(51)
 /* template */
-var __vue_template__ = __webpack_require__(50)
+var __vue_template__ = __webpack_require__(52)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -192,7 +192,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 49:
+/***/ 51:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -234,79 +234,166 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['replied', 'reply', 'yourAnswer', 'send']
+    props: ['replied', 'reply', 'yourAnswer', 'send', 'threadId', 'isClosed'],
+    data: function data() {
+        return {
+            replies: [],
+            logged: window.user || {},
+            thread_id: this.threadId,
+            is_closed: this.isClosed,
+            reply_to_sabe: {
+                body: '',
+                thread_id: this.threadId
+            }
+        };
+    },
+
+    methods: {
+        save: function save() {
+            var _this = this;
+
+            window.axios.post('/replies/', this.reply_to_sabe).then(function () {
+                _this.getReplies();
+            });
+        },
+        getReplies: function getReplies() {
+            var _this2 = this;
+
+            window.axios.get('/replies/' + this.thread_id).then(function (response) {
+                _this2.replies = response.data;
+            });
+        }
+    },
+    mounted: function mounted() {
+        var _this3 = this;
+
+        this.getReplies();
+
+        Echo.channel('new.reply' + this.thread_id).listen('NewReply', function (e) {
+            if (e.reply) {
+                _this3.getReplies();
+            }
+        });
+    }
 });
 
 /***/ }),
 
-/***/ 50:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "card" }, [
-    _c("div", { staticClass: "card-content" }, [
-      _c("span", { staticClass: "card-title" }, [
-        _vm._v("Erick " + _vm._s(_vm.replied))
-      ]),
-      _vm._v(" "),
-      _c("blockquote", [
-        _vm._v(
-          "\n            Vero dolorem maiores unde quidem dolorem facilis.Veritatis vel excepturi sunt quo vel aut. Quo vel voluptatem non commodi quis animi a. Quos ipsam totam est qui et vel. Non adipisci totam tenetur in ut aut doloremque est.\n        "
+  return _c(
+    "div",
+    [
+      _vm._l(_vm.replies, function(data) {
+        return _c(
+          "div",
+          {
+            staticClass: "card horizontal",
+            class: { "lime lighten-4": data.highlited }
+          },
+          [
+            _c("div", { staticClass: "card-images" }, [
+              _c("img", { attrs: { src: data.user.photo_url, alt: "" } })
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "card-stacked" }, [
+              _c("div", { staticClass: "card-content" }, [
+                _c("span", { staticClass: "card-title" }, [
+                  _vm._v(_vm._s(data.user.name) + " " + _vm._s(_vm.replied))
+                ]),
+                _vm._v(" "),
+                _c("blockquote", [
+                  _vm._v(
+                    "\n                    " +
+                      _vm._s(data.body) +
+                      "\n                "
+                  )
+                ])
+              ]),
+              _vm._v(" "),
+              _vm.logged.role === "admin"
+                ? _c("div", { staticClass: "card-action" }, [
+                    _c(
+                      "a",
+                      { attrs: { href: "/reply/higthligth/" + data.id } },
+                      [_vm._v("em destaque")]
+                    )
+                  ])
+                : _vm._e()
+            ])
+          ]
         )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "card-content" }, [
-      _c("span", { staticClass: "card-title" }, [
-        _vm._v("Erick " + _vm._s(_vm.replied))
-      ]),
+      }),
       _vm._v(" "),
-      _c("blockquote", [
-        _vm._v(
-          "\n            Vero dolorem maiores unde quidem dolorem facilis.Veritatis vel excepturi sunt quo vel aut. Quo vel voluptatem non commodi quis animi a. Quos ipsam totam est qui et vel. Non adipisci totam tenetur in ut aut doloremque est.\n        "
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "card-content" }, [
-      _c("span", { staticClass: "card-title" }, [
-        _vm._v("Erick " + _vm._s(_vm.replied))
-      ]),
-      _vm._v(" "),
-      _c("blockquote", [
-        _vm._v(
-          "\n            Vero dolorem maiores unde quidem dolorem facilis.Veritatis vel excepturi sunt quo vel aut. Quo vel voluptatem non commodi quis animi a. Quos ipsam totam est qui et vel. Non adipisci totam tenetur in ut aut doloremque est.\n        "
-        )
-      ])
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "card grey lighten-4" }, [
-      _c("div", { staticClass: "card-content" }, [
-        _c("span", { staticClass: "card-title" }, [_vm._v(_vm._s(_vm.reply))]),
-        _vm._v(" "),
-        _c("form", [
-          _c("div", { staticClass: "input-field" }, [
-            _c("textarea", {
-              staticClass: "materialize-textarea",
-              attrs: { rows: "10", placeholder: _vm.yourAnswer }
-            })
-          ]),
-          _vm._v(" "),
-          _c(
-            "button",
-            { staticClass: "btn red accent-2", attrs: { type: "submit" } },
-            [_vm._v(_vm._s(_vm.send))]
-          )
-        ])
-      ])
-    ])
-  ])
+      _vm.is_closed == 0
+        ? _c("div", { staticClass: "card grey lighten-4" }, [
+            _c("div", { staticClass: "card-content" }, [
+              _c("span", { staticClass: "card-title" }, [
+                _vm._v(_vm._s(_vm.reply))
+              ]),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  on: {
+                    submit: function($event) {
+                      $event.preventDefault()
+                      _vm.save()
+                    }
+                  }
+                },
+                [
+                  _c("div", { staticClass: "input-field" }, [
+                    _c("textarea", {
+                      directives: [
+                        {
+                          name: "model",
+                          rawName: "v-model",
+                          value: _vm.reply_to_sabe.body,
+                          expression: "reply_to_sabe.body"
+                        }
+                      ],
+                      staticClass: "materialize-textarea",
+                      attrs: { rows: "10", placeholder: _vm.yourAnswer },
+                      domProps: { value: _vm.reply_to_sabe.body },
+                      on: {
+                        input: function($event) {
+                          if ($event.target.composing) {
+                            return
+                          }
+                          _vm.$set(
+                            _vm.reply_to_sabe,
+                            "body",
+                            $event.target.value
+                          )
+                        }
+                      }
+                    })
+                  ]),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn red accent-2",
+                      attrs: { type: "submit" }
+                    },
+                    [_vm._v(_vm._s(_vm.send))]
+                  )
+                ]
+              )
+            ])
+          ])
+        : _vm._e()
+    ],
+    2
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -320,4 +407,4 @@ if (false) {
 
 /***/ })
 
-},[46]);
+},[48]);

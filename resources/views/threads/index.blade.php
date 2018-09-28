@@ -12,6 +12,8 @@
         thread-title="{{__('Title')}}"
         thread-body="{{__('Body')}}"
         send="{{__('Send')}}"
+        pin="{{__('Pin')}}"
+        close="{{__('Close')}}"
 
     >
         @include('layouts.default.preloader');

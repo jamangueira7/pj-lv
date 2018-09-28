@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateThreadsTable extends Migration
+class CreateSocialauthsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,10 @@ class CreateThreadsTable extends Migration
      */
     public function up()
     {
-        Schema::create('threads', function (Blueprint $table) {
+        Schema::create('socialauths', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('title');
-            $table->text('body');
-            $table->boolean('fixed')->default(false);
-            $table->boolean('closed')->default(false);
-            $table->integer('replies_count')->default(0);
+            $table->string('provider');
+            $table->string('social_id');
             $table->integer('user_id')->unsigned();
             $table->timestamps();
 
@@ -35,6 +32,6 @@ class CreateThreadsTable extends Migration
     public function down()
     {
         Schema::disableForeignKeyConstraints();
-        Schema::dropIfExists('threads');
+        Schema::dropIfExists('socialauths');
     }
 }

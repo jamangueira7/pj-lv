@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-
+use App\Events\NewThread;
 use App\Thread;
 use Illuminate\Http\Request;
 use App\Http\Requests\ThreadsRequest;
@@ -16,7 +16,10 @@ class ThreadController extends Controller
      */
     public function index()
     {
-        $threads = Thread::orderBy('updated_at','desc')->paginate();
+        $threads = Thread::orderBy('fixed','desc')
+            ->orderBy('updated_at','desc')
+            ->paginate();
+
         return response()->json($threads);
     }
 
@@ -35,6 +38,7 @@ class ThreadController extends Controller
         $thread->user_id = \Auth::user()->id;
         $thread->save();
 
+        broadcast(new NewThread($thread));
         return response()->json(['created' => 'success', 'data' =>$thread]);
     }
 
@@ -65,5 +69,22 @@ class ThreadController extends Controller
     public function destroy(Thread $thread)
     {
         //
+    }
+
+    public function pin(Thread $thread)
+    {
+        $this->authorize('isAdmin',$thread);
+        $thread->fixed = true;
+        $thread->save();
+
+        return redirect('/');
+    }
+    public function close(Thread $thread)
+    {
+        $this->authorize('isAdmin',$thread);
+        $thread->closed = true;
+        $thread->save();
+
+        return redirect('/');
     }
 }

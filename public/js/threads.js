@@ -1,13 +1,5 @@
 webpackJsonp([2],{
 
-/***/ 39:
-/***/ (function(module, exports, __webpack_require__) {
-
-module.exports = __webpack_require__(40);
-
-
-/***/ }),
-
 /***/ 4:
 /***/ (function(module, exports) {
 
@@ -118,7 +110,15 @@ module.exports = function normalizeComponent (
 
 /***/ }),
 
-/***/ 40:
+/***/ 41:
+/***/ (function(module, exports, __webpack_require__) {
+
+module.exports = __webpack_require__(42);
+
+
+/***/ }),
+
+/***/ 42:
 /***/ (function(module, exports, __webpack_require__) {
 
 
@@ -136,7 +136,7 @@ window.Vue = __webpack_require__(3);
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-Vue.component('threads', __webpack_require__(43));
+Vue.component('threads', __webpack_require__(45));
 
 var app = new Vue({
   el: '#app'
@@ -144,15 +144,15 @@ var app = new Vue({
 
 /***/ }),
 
-/***/ 43:
+/***/ 45:
 /***/ (function(module, exports, __webpack_require__) {
 
 var disposed = false
 var normalizeComponent = __webpack_require__(4)
 /* script */
-var __vue_script__ = __webpack_require__(44)
+var __vue_script__ = __webpack_require__(46)
 /* template */
-var __vue_template__ = __webpack_require__(45)
+var __vue_template__ = __webpack_require__(47)
 /* template functional */
 var __vue_template_functional__ = false
 /* styles */
@@ -192,7 +192,7 @@ module.exports = Component.exports
 
 /***/ }),
 
-/***/ 44:
+/***/ 46:
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -239,9 +239,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-    props: ['title', 'threads', 'replies', 'open', 'newThread', 'threadTitle', 'threadBody', 'send'],
+    props: ['title', 'threads', 'replies', 'open', 'newThread', 'threadTitle', 'threadBody', 'send', 'pin', 'close'],
     data: function data() {
         return {
             threads_response: [],
@@ -270,13 +272,21 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
     },
     mounted: function mounted() {
+        var _this3 = this;
+
         this.getThreads();
+
+        Echo.channel('new.thread').listen('NewThread', function (e) {
+            if (e.thread) {
+                _this3.threads_response.data.splice(0, 0, e.thread);
+            }
+        });
     }
 });
 
 /***/ }),
 
-/***/ 45:
+/***/ 47:
 /***/ (function(module, exports, __webpack_require__) {
 
 var render = function() {
@@ -303,17 +313,44 @@ var render = function() {
         _c(
           "tbody",
           _vm._l(_vm.threads_response.data, function(thread) {
-            return _c("tr", [
+            return _c("tr", { class: { "lime lighten-4": thread.fixed } }, [
               _c("td", [_vm._v(_vm._s(thread.id))]),
               _vm._v(" "),
               _c("td", [_vm._v(_vm._s(thread.title))]),
               _vm._v(" "),
-              _c("td", [_vm._v("0")]),
+              _c("td", [_vm._v(_vm._s(thread.replies_count || 0))]),
               _vm._v(" "),
               _c("td", [
-                _c("a", { attrs: { href: "/threads/" + thread.id } }, [
-                  _vm._v(_vm._s(_vm.open))
-                ])
+                _c(
+                  "a",
+                  {
+                    staticClass: "btn",
+                    attrs: { href: "/threads/" + thread.id }
+                  },
+                  [_vm._v(_vm._s(_vm.open))]
+                ),
+                _vm._v(" "),
+                _vm.logged.role === "admin"
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn",
+                        attrs: { href: "/thread/pin/" + thread.id }
+                      },
+                      [_vm._v(_vm._s(_vm.pin))]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.logged.role === "admin"
+                  ? _c(
+                      "a",
+                      {
+                        staticClass: "btn",
+                        attrs: { href: "/thread/close/" + thread.id }
+                      },
+                      [_vm._v(_vm._s(_vm.close))]
+                    )
+                  : _vm._e()
               ])
             ])
           })
@@ -406,4 +443,4 @@ if (false) {
 
 /***/ })
 
-},[39]);
+},[41]);

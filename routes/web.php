@@ -25,16 +25,30 @@ Route::get('/locale/{locale}', function ($locale) {
     return back();
 });
 
+Route::get('/threads','ThreadController@index');
+Route::get('/replies/{id}','ReplyController@show');
+
+Route::get('/login/{provider}','SocialauthController@redirect');
+Route::get('/login/{provider}/callback','SocialauthController@callback');
+
+
 Route::middleware(['auth'])->group(function(){
-    Route::get('/threads','ThreadController@index');
+
     Route::post('/threads','ThreadController@store');
     Route::put('/threads/{thread}','ThreadController@update');
     Route::get('/threads/{thread}/edit',function (\App\Thread $thread) {
         return view('threads.edit', compact('thread'));
     });
-    Route::get('/replies/{id}','ReplyController@show');
+
+    Route::get('/reply/higthligth/{id}','ReplyController@higthligth');
+    Route::get('/thread/pin/{thread}','ThreadController@pin');
+    Route::get('/thread/close/{thread}','ThreadController@close');
+
+    Route::get('/profile','ProfileController@edit');
+    Route::post('/profile','ProfileController@update');
+
+    Route::post('/replies','ReplyController@store');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');

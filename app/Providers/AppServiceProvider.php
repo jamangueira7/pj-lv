@@ -4,6 +4,11 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
+use App\Reply;
+use App\Observers\ReplayObserver;
+
+use App\User;
+use App\Observers\PhotoUserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -16,6 +21,8 @@ class AppServiceProvider extends ServiceProvider
     {
         //
         Schema::defaultStringLength(191);
+        Reply::observe(ReplayObserver::class);
+        User::observe(PhotoUserObserver::class);
     }
 
     /**
